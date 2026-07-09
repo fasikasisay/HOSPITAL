@@ -14,27 +14,38 @@ async function loadPatients() {
         console.error("Error loading patients:", error);
     }
 }
-table.innerHTML += `
-<tr>
-    <td>${patient.token}</td>
-    <td>${patient.name}</td>
-    <td>${patient.urgency}</td>
-    <td>${patient.status}</td>
-    <td>
-        <button onclick="servePatient(${patient.id})">
-            Serve
-        </button>
 
-        <button onclick="completePatient(${patient.id})">
-            Complete
-        </button>
+function renderPatients() {
+    const table = document.getElementById("patientTable");
 
-        <button onclick="removePatient(${patient.id})">
-            Remove
-        </button>
-    </td>
-</tr>
-`;
+    table.innerHTML = "";
+
+    patients.forEach((patient) => {
+        table.innerHTML += `
+        <tr>
+            <td>${patient.token}</td>
+            <td>${patient.name}</td>
+            <td>${patient.urgency}</td>
+            <td>${patient.status}</td>
+            <td>
+                <button onclick="servePatient(${patient.id})">
+                    Serve
+                </button>
+
+                <button onclick="completePatient(${patient.id})">
+                    Complete
+                </button>
+
+                <button onclick="removePatient(${patient.id})">
+                    Remove
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+
+    updateStats();
+}
 function updateStats(){
 
     document.getElementById("totalPatients").innerText =
