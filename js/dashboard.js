@@ -2,43 +2,39 @@ if(!localStorage.getItem("loggedIn")){
     window.location.href = "login.html";
 }
 
-let patients = JSON.parse(localStorage.getItem("patients")) || [];
+let patients = [];
 
-function renderPatients(){
+async function loadPatients() {
+    try {
+        const response = await fetch("http://localhost:5000/patients");
+        patients = await response.json();
 
-    const table =
-        document.getElementById("patientTable");
-
-    table.innerHTML = "";
-
-    patients.forEach((patient,index)=>{
-
-        table.innerHTML += `
-            <tr>
-                <td>${patient.token}</td>
-                <td>${patient.name}</td>
-                <td>${patient.urgency}</td>
-                <td>${patient.status}</td>
-                <td>
-                    <button onclick="servePatient(${index})">
-                        Serve
-                    </button>
-
-                    <button onclick="completePatient(${index})">
-                        Complete
-                    </button>
-
-                    <button onclick="removePatient(${index})">
-                        Remove
-                    </button>
-                </td>
-            </tr>
-        `;
-    });
-
-    updateStats();
+        renderPatients();
+    } catch (error) {
+        console.error("Error loading patients:", error);
+    }
 }
+table.innerHTML += `
+<tr>
+    <td>${patient.token}</td>
+    <td>${patient.name}</td>
+    <td>${patient.urgency}</td>
+    <td>${patient.status}</td>
+    <td>
+        <button onclick="servePatient(${patient.id})">
+            Serve
+        </button>
 
+        <button onclick="completePatient(${patient.id})">
+            Complete
+        </button>
+
+        <button onclick="removePatient(${patient.id})">
+            Remove
+        </button>
+    </td>
+</tr>
+`;
 function updateStats(){
 
     document.getElementById("totalPatients").innerText =
@@ -56,22 +52,37 @@ function updateStats(){
 function savePatients() {
     localStorage.setItem("patients", JSON.stringify(patients));
 }
-function servePatient(index){
-    patients[index].status = "Serving";
-    savePatients();
-    renderPatients();
+async function servePatient(id) {
+    await fetch(
+        `http://localhost:5000/patients/${id}/serve`,
+        {
+            method: "PUT"
+        }
+    );
+
+    loadPatients();
 }
 
-function completePatient(index){
-    patients[index].status = "Completed";
-   savePatients();
-    renderPatients();
+async function completePatient(id) {
+    await fetch(
+        `http://localhost:5000/patients/${id}/complete`,
+        {
+            method: "PUT"
+        }
+    );
+
+    loadPatients();
 }
 
-function removePatient(index){
-    patients.splice(index,1);
-    savePatients();
-    renderPatients();
+async function removePatient(id) {
+    await fetch(
+        `http://localhost:5000/patients/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    loadPatients();
 }
 
 document.getElementById("logoutBtn")
@@ -83,4 +94,4 @@ document.getElementById("logoutBtn")
     window.location.href="login.html";
 });
 
-renderPatients();
+loadPatients();

@@ -34,6 +34,47 @@ app.post("/patients", (req, res) => {
 
     res.status(201).json(patient);
 });
+app.put("/patients/:id/serve", (req, res) => {
+    const patient = patients.find(
+        p => p.id == req.params.id
+    );
+
+    if (!patient) {
+        return res.status(404).json({
+            message: "Patient not found"
+        });
+    }
+
+    patient.status = "Serving";
+
+    res.json(patient);
+});
+
+app.put("/patients/:id/complete", (req, res) => {
+    const patient = patients.find(
+        p => p.id == req.params.id
+    );
+
+    if (!patient) {
+        return res.status(404).json({
+            message: "Patient not found"
+        });
+    }
+
+    patient.status = "Completed";
+
+    res.json(patient);
+});
+
+app.delete("/patients/:id", (req, res) => {
+    patients = patients.filter(
+        p => p.id != req.params.id
+    );
+
+    res.json({
+        message: "Patient removed"
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
