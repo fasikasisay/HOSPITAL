@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Dashboard</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+    <header>
+        <h1>🏥 Hospital Queue Dashboard</h1>
+        <button id="logoutBtn">Logout</button>
+    </header>
+
+    <section class="stats">
+
+        <div class="card">
+            <h2 id="totalPatients">0</h2>
+            <p>Total Patients</p>
+        </div>
+
+        <div class="card">
+            <h2 id="waitingPatients">0</h2>
+            <p>Waiting</p>
+        </div>
+
+        <div class="card">
+            <h2 id="servingPatients">0</h2>
+            <p>Serving</p>
+        </div>
+
+        <div class="card">
+            <h2 id="completedPatients">0</h2>
+            <p>Completed</p>
+        </div>
+
+    </section>
+
+    <section class="queue-section">
+
+        <h2>Patient Queue</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Name</th>
+                    <th>Urgency</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="patientTable">
+
+            </tbody>
+        </table>
+
+    </section>
+
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>
