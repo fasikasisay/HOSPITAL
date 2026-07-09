@@ -1,32 +1,47 @@
 let patients = JSON.parse(localStorage.getItem("patients")) || [];
 
 document.getElementById("patientForm")
-.addEventListener("submit", function(e) {
+.addEventListener("submit", async function(e) {
+
     e.preventDefault();
 
     const patient = {
-        token: String(patients.length + 1).padStart(3, "0"),
         name: document.getElementById("name").value,
         age: document.getElementById("age").value,
         gender: document.getElementById("gender").value,
         phone: document.getElementById("phone").value,
         reason: document.getElementById("reason").value,
-        urgency: document.getElementById("urgency").value,
-        status: "Waiting"
+        urgency: document.getElementById("urgency").value
     };
 
-    patients.push(patient);
+    try {
 
-    localStorage.setItem("patients", JSON.stringify(patients));
+        const response = await fetch(
+            "http://localhost:5000/patients",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(patient)
+            }
+        );
 
-    document.getElementById("result").innerHTML = `
-        <h3>Registration Successful</h3>
-        <p>Token Number: ${patient.token}</p>
-        <p>Queue Position: ${patients.length}</p>
-        <p>Estimated Waiting Time: ${patients.length * 5} minutes</p>
-    `;
+        const data = await response.json();
 
-    document.getElementById("result").classList.remove("hidden");
+        document.getElementById("result").innerHTML = `
+            <h3>Registration Successful</h3>
+            <p><strong>Token:</strong> ${data.token}</p>
+            <p><strong>Status:</strong> ${data.status}</p>
+        `;
 
-    this.reset();
+        document.getElementById("result")
+            .classList.remove("hidden");
+
+        this.reset();
+
+    } catch (error) {
+        console.error(error);
+        alert("Failed to connect to server");
+    }
 });
