@@ -2,26 +2,7 @@ if(!localStorage.getItem("loggedIn")){
     window.location.href = "login.html";
 }
 
-let patients = [
-    {
-        token:"001",
-        name:"John",
-        urgency:"Critical",
-        status:"Waiting"
-    },
-    {
-        token:"002",
-        name:"Sara",
-        urgency:"High",
-        status:"Waiting"
-    },
-    {
-        token:"003",
-        name:"Mike",
-        urgency:"Normal",
-        status:"Serving"
-    }
-];
+let patients = JSON.parse(localStorage.getItem("patients")) || [];
 
 function renderPatients(){
 
@@ -72,19 +53,24 @@ function updateStats(){
     document.getElementById("completedPatients").innerText =
         patients.filter(p=>p.status==="Completed").length;
 }
-
+function savePatients() {
+    localStorage.setItem("patients", JSON.stringify(patients));
+}
 function servePatient(index){
     patients[index].status = "Serving";
+    savePatients();
     renderPatients();
 }
 
 function completePatient(index){
     patients[index].status = "Completed";
+   savePatients();
     renderPatients();
 }
 
 function removePatient(index){
     patients.splice(index,1);
+    savePatients();
     renderPatients();
 }
 
