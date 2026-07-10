@@ -3,53 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Queue Management</title>
+    <title>Hospital Queue Management — Patient Registration</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <div class="container">
+    <div class="bg-scene"></div>
 
-        <div class="card">
+    <div class="login-topbar">
+        <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+        </button>
+    </div>
 
-            <h1>🏥 Hospital Queue Management</h1>
-            <p class="subtitle">Patient Registration</p>
+    <div class="register-page">
 
-            <form id="patientForm">
+        <aside class="register-hero">
+            <div class="hero-brand">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.1C.5 8.5 2 5 5.5 4.3 8 3.8 10 5 12 7c2-2 4-3.2 6.5-2.7C22 5 23.5 8.5 22 11.9 19.5 16.4 12 21 12 21z"/><path d="M9 11h6M12 8v6"/></svg>
+                </span>
+                MediQueue
+            </div>
 
-                <input type="text" id="name" placeholder="Full Name" required>
+            <div class="hero-copy">
+                <h1>Get in line, without the waiting room crowd.</h1>
+                <p>Register once and we'll hand you a queue token, route you by urgency, and keep staff updated in real time.</p>
+            </div>
 
-                <input type="number" id="age" placeholder="Age" required>
+            <div class="hero-stats">
+                <div>
+                    <strong>24/7</strong>
+                    <span>Walk-in intake</span>
+                </div>
+                <div>
+                    <strong>4</strong>
+                    <span>Urgency tiers</span>
+                </div>
+                <div>
+                    <strong>Live</strong>
+                    <span>Queue status</span>
+                </div>
+            </div>
 
-                <select id="gender" required>
-                    <option value="">Select Gender</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                </select>
+            <p class="hero-foot">City General Hospital · Outpatient Queue Services</p>
+        </aside>
 
-                <input type="text" id="phone" placeholder="Phone Number" required>
+        <main class="register-panel">
+            <div class="register-form-card card glass">
 
-                <textarea id="reason" placeholder="Reason for Visit" required></textarea>
+                <div class="card-head">
+                    <span class="eyebrow">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                        Patient intake
+                    </span>
+                    <h1>Join the queue</h1>
+                    <p class="subtitle">Fill in your details and we'll assign you a token right away.</p>
+                </div>
 
-                <select id="urgency" required>
-                    <option value="">Select Urgency Level</option>
-                    <option value="Critical">Critical</option>
-                    <option value="High">High</option>
-                    <option value="Normal">Normal</option>
-                    <option value="Low">Low</option>
-                </select>
+                <form id="patientForm">
 
-                <button type="submit">Join Queue</button>
+                    <div class="form-row">
+                        <div class="field">
+                            <label for="name">Full name</label>
+                            <div class="input-wrap">
+                                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <input type="text" id="name" placeholder="Jane Doe" required>
+                            </div>
+                        </div>
 
-            </form>
+                        <div class="field">
+                            <label for="age">Age</label>
+                            <div class="input-wrap">
+                                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                <input type="number" id="age" placeholder="32" min="0" max="130" required>
+                            </div>
+                        </div>
+                    </div>
 
-            <div id="result" class="hidden"></div>
+                    <div class="form-row">
+                        <div class="field">
+                            <label for="gender">Gender</label>
+                            <div class="input-wrap">
+                                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M12 13v8M9 18h6"/></svg>
+                                <select id="gender" required>
+                                    <option value="">Select gender</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                        </div>
 
-        </div>
+                        <div class="field">
+                            <label for="phone">Phone number</label>
+                            <div class="input-wrap">
+                                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .6 2.9a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.5 2.9.6a2 2 0 0 1 1.7 2.1z"/></svg>
+                                <input type="tel" id="phone" placeholder="+1 (555) 000-0000" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="reason">Reason for visit</label>
+                        <div class="input-wrap" style="align-items: flex-start;">
+                            <svg class="field-icon" style="top: 15px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+                            <textarea id="reason" placeholder="Briefly describe your symptoms or reason for the visit" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="urgency">Urgency level</label>
+                        <div class="input-wrap">
+                            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+                            <select id="urgency" required>
+                                <option value="">Select urgency level</option>
+                                <option value="Critical">Critical</option>
+                                <option value="High">High</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        Join queue
+                    </button>
+
+                </form>
+
+                <div id="result" class="hidden"></div>
+
+            </div>
+        </main>
 
     </div>
 
+    <script src="js/theme.js"></script>
     <script src="js/app.js"></script>
 
 </body>
