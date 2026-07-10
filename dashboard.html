@@ -3,63 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Dashboard</title>
+    <title>Dashboard — MediQueue</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body>
+<body> 
 
-    <header>
-        <h1>🏥 Hospital Queue Dashboard</h1>
-        <button id="logoutBtn">Logout</button>
-    </header>
+    <div class="bg-scene"></div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <section class="stats">
+    <div class="app-shell">
 
-        <div class="card">
-            <h2 id="totalPatients">0</h2>
-            <p>Total Patients</p>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.1C.5 8.5 2 5 5.5 4.3 8 3.8 10 5 12 7c2-2 4-3.2 6.5-2.7C22 5 23.5 8.5 22 11.9 19.5 16.4 12 21 12 21z"/><path d="M9 11h6M12 8v6"/></svg>
+                </span>
+                <div>
+                    <strong>MediQueue</strong>
+                    <span>City General Hospital</span>
+                </div>
+                <button class="btn-icon sidebar-close" id="sidebarClose" aria-label="Close menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <p class="nav-group-label">Overview</p>
+            <a href="dashboard.html" class="nav-link active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+                Queue dashboard
+            </a>
+
+            <p class="nav-group-label">Actions</p>
+            <a href="index.html" class="nav-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+                Register patient
+            </a>
+
+            <div class="sidebar-spacer"></div>
+
+            <div class="sidebar-foot">
+                <button type="button" class="nav-link" id="themeToggle" style="width: 100%; border: none; background: none; cursor: pointer;">
+                    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: static; opacity: 1;"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+                    <span id="themeToggleLabel">Dark mode</span>
+                </button>
+                <button type="button" class="nav-link" id="logoutBtn" style="width: 100%; border: none; background: none; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                    Log out
+                </button>
+            </div>
+        </aside>
+
+        <div>
+            <header class="topbar">
+                <button class="btn-icon menu-toggle" id="menuToggle" aria-label="Open menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+                </button>
+
+                <div class="topbar-title">
+                    <h1>Queue dashboard</h1>
+                    <p>Live view of every patient currently in the system</p>
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="avatar-chip">
+                        <span class="avatar-initials" id="avatarInitials">ST</span>
+                        <span class="avatar-role" id="avatarRole">Staff</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+
+                <section class="stats">
+
+                    <div class="stat-card stat-total">
+                        <span class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </span>
+                        <div class="stat-body">
+                            <h2 id="totalPatients">0</h2>
+                            <p>Total patients</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-waiting">
+                        <span class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </span>
+                        <div class="stat-body">
+                            <h2 id="waitingPatients">0</h2>
+                            <p>Waiting</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-serving">
+                        <span class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </span>
+                        <div class="stat-body">
+                            <h2 id="servingPatients">0</h2>
+                            <p>Being served</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-completed">
+                        <span class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                        </span>
+                        <div class="stat-body">
+                            <h2 id="completedPatients">0</h2>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section class="queue-section">
+
+                    <div class="queue-section-head">
+                        <div>
+                            <h2>Patient queue</h2>
+                            <p class="hint">Serve, complete, or remove patients as they move through the queue</p>
+                        </div>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Token</th>
+                                    <th>Patient</th>
+                                    <th>Urgency</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="patientTable">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+
+            </main>
         </div>
 
-        <div class="card">
-            <h2 id="waitingPatients">0</h2>
-            <p>Waiting</p>
-        </div>
+    </div>
 
-        <div class="card">
-            <h2 id="servingPatients">0</h2>
-            <p>Serving</p>
-        </div>
-
-        <div class="card">
-            <h2 id="completedPatients">0</h2>
-            <p>Completed</p>
-        </div>
-
-    </section>
-
-    <section class="queue-section">
-
-        <h2>Patient Queue</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Token</th>
-                    <th>Name</th>
-                    <th>Urgency</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-
-            <tbody id="patientTable">
-
-            </tbody>
-        </table>
-
-    </section>
-
+    <script src="js/theme.js"></script>
     <script src="js/dashboard.js"></script>
 
 </body>
