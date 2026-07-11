@@ -1,4 +1,4 @@
- 
+
 (function () {
     var STORAGE_KEY = "theme";
     var root = document.documentElement;
@@ -10,7 +10,7 @@
             root.removeAttribute("data-theme");
         }
     }
-
+ 
     var saved = localStorage.getItem(STORAGE_KEY);
     var prefersDark = window.matchMedia &&
         window.matchMedia("(prefers-color-scheme: dark)").matches;

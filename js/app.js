@@ -12,7 +12,7 @@ if (urgencySelect) {
         }
     });
 }
-
+ 
 document.getElementById("patientForm")
 .addEventListener("submit", async function(e) {
 

@@ -1,35 +1,57 @@
-document
-.getElementById("loginForm")
-.addEventListener("submit", function(e){
+const API_BASE = "http://localhost:5000";
 
+const loginForm = document.getElementById("loginForm");
+const messageEl = document.getElementById("message");
+
+function showError(text) {
+    messageEl.innerText = text;
+    messageEl.classList.remove("shake");
+    // Force reflow so the animation can replay on repeated errors.
+    void messageEl.offsetWidth;
+    messageEl.classList.add("shake");
+}
+ 
+loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const username =
-        document.getElementById("username").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
-    const password =
-        document.getElementById("password").value;
+    const submitBtn = loginForm.querySelector("button[type='submit']");
+    const originalBtnHTML = submitBtn ? submitBtn.innerHTML : null;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = "Signing in…";
+    }
+    messageEl.innerText = "";
 
-    const messageEl = document.getElementById("message");
+    try {
+        const response = await fetch(`${API_BASE}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+        });
 
-    if(
-        (username === "admin" && password === "admin123") ||
-        (username === "staff" && password === "staff123")
-    ){
+        const data = await response.json();
+
+        if (!response.ok) {
+            showError(data.message || "Invalid username or password");
+            return;
+        }
+
+        localStorage.setItem("token", data.token);
         localStorage.setItem("loggedIn", true);
-        localStorage.setItem("role", username);
+        localStorage.setItem("role", data.user.role);
 
         window.location.href = "dashboard.html";
-    }
-    else{
-        messageEl.innerText =
-            "Invalid username or password";
-
-        // Cosmetic-only feedback, no functional change.
-        messageEl.classList.remove("shake");
-        // Force reflow so the animation can replay on repeated errors.
-        void messageEl.offsetWidth;
-        messageEl.classList.add("shake");
+    } catch (error) {
+        console.error(error);
+        showError("Could not reach the server. Please try again.");
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
+        }
     }
 });
 

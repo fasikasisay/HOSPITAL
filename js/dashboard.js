@@ -1,8 +1,29 @@
-if(!localStorage.getItem("loggedIn")){
+const API_BASE = "http://localhost:5000";
+
+if (!localStorage.getItem("loggedIn") || !localStorage.getItem("token")) {
     window.location.href = "login.html";
 }
 
 let patients = [];
+const currentRole = localStorage.getItem("role");
+
+function authHeaders() {
+    return { Authorization: `Bearer ${localStorage.getItem("token")}` };
+}
+ 
+/** Centralized session handling: if the token is missing/expired or
+ *  the current role isn't permitted, send the user back to login
+ *  rather than leaving them looking at a broken dashboard. */
+function handleAuthFailure(status) {
+    if (status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("role");
+        window.location.href = "login.html";
+        return true;
+    }
+    return false;
+}
 
 // ---------- Cosmetic helpers (urgency/status badges, avatar) ----------
 
@@ -31,11 +52,10 @@ function initialsFrom(text) {
 }
 
 (function renderStaffChip() {
-    const role = localStorage.getItem("role");
     const roleEl = document.getElementById("avatarRole");
     const initialsEl = document.getElementById("avatarInitials");
-    if (roleEl && role) roleEl.textContent = role;
-    if (initialsEl) initialsEl.textContent = initialsFrom(role);
+    if (roleEl && currentRole) roleEl.textContent = currentRole;
+    if (initialsEl) initialsEl.textContent = initialsFrom(currentRole);
 })();
 
 // ---------- Mobile sidebar toggle (cosmetic only) ----------
@@ -56,13 +76,17 @@ if (menuToggle) menuToggle.addEventListener("click", openSidebar);
 if (sidebarClose) sidebarClose.addEventListener("click", closeSidebar);
 if (sidebarBackdrop) sidebarBackdrop.addEventListener("click", closeSidebar);
 
-// ---------- Core queue logic (unchanged behavior) ----------
+// ---------- Core queue logic ----------
 
 async function loadPatients() {
     try {
-        const response = await fetch("http://localhost:5000/patients");
-        patients = await response.json();
+        const response = await fetch(`${API_BASE}/patients`, {
+            headers: authHeaders(),
+        });
 
+        if (handleAuthFailure(response.status)) return;
+
+        patients = await response.json();
         renderPatients();
     } catch (error) {
         console.error("Error loading patients:", error);
@@ -71,6 +95,9 @@ async function loadPatients() {
 
 function renderPatients() {
     const table = document.getElementById("patientTable");
+    // Deleting a patient is restricted to admins on the backend;
+    // only show the control to roles that can actually use it.
+    const canDelete = currentRole === "admin";
 
     table.innerHTML = "";
 
@@ -110,9 +137,11 @@ function renderPatients() {
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                     </button>
 
+                    ${canDelete ? `
                     <button class="btn-icon action-remove" title="Remove" onclick="removePatient(${patient.id})">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 6"/></svg>
                     </button>
+                    ` : ""}
                 </div>
             </td>
         </tr>
@@ -121,6 +150,7 @@ function renderPatients() {
 
     updateStats();
 }
+
 function updateStats(){
 
     document.getElementById("totalPatients").innerText =
@@ -135,47 +165,67 @@ function updateStats(){
     document.getElementById("completedPatients").innerText =
         patients.filter(p=>p.status==="Completed").length;
 }
-function savePatients() {
-    localStorage.setItem("patients", JSON.stringify(patients));
-}
+
 async function servePatient(id) {
-    await fetch(
-        `http://localhost:5000/patients/${id}/serve`,
-        {
-            method: "PUT"
-        }
+    const response = await fetch(
+        `${API_BASE}/patients/${id}/serve`,
+        { method: "PUT", headers: authHeaders() }
     );
+
+    if (handleAuthFailure(response.status)) return;
+    if (!response.ok) {
+        console.error("Failed to serve patient", await response.json().catch(() => ({})));
+        return;
+    }
 
     loadPatients();
 }
 
 async function completePatient(id) {
-    await fetch(
-        `http://localhost:5000/patients/${id}/complete`,
-        {
-            method: "PUT"
-        }
+    const response = await fetch(
+        `${API_BASE}/patients/${id}/complete`,
+        { method: "PUT", headers: authHeaders() }
     );
+
+    if (handleAuthFailure(response.status)) return;
+    if (!response.ok) {
+        console.error("Failed to complete patient", await response.json().catch(() => ({})));
+        return;
+    }
 
     loadPatients();
 }
 
 async function removePatient(id) {
-    await fetch(
-        `http://localhost:5000/patients/${id}`,
-        {
-            method: "DELETE"
-        }
+    const response = await fetch(
+        `${API_BASE}/patients/${id}`,
+        { method: "DELETE", headers: authHeaders() }
     );
+
+    if (handleAuthFailure(response.status)) return;
+    if (!response.ok) {
+        console.error("Failed to remove patient", await response.json().catch(() => ({})));
+        return;
+    }
 
     loadPatients();
 }
 
 document.getElementById("logoutBtn")
-.addEventListener("click",()=>{
+.addEventListener("click", async () => {
+
+    try {
+        await fetch(`${API_BASE}/auth/logout`, {
+            method: "POST",
+            headers: authHeaders(),
+        });
+    } catch (error) {
+        console.error("Logout request failed:", error);
+    }
 
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("role");
+    localStorage.removeItem("token");
 
     window.location.href="login.html";
 });
